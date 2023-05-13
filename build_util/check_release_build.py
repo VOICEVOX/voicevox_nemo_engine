@@ -39,7 +39,7 @@ def test_release_build(dist_dir: Path) -> None:
         query = json.loads(res.read().decode("utf-8"))
 
     # クエリ -> 音声
-    req = Request(base_url + "synthesis?speaker=1", method="POST")
+    req = Request(base_url + "synthesis?speaker=10001", method="POST")
     req.add_header("Content-Type", "application/json")
     req.data = json.dumps(query).encode("utf-8")
     with urlopen(req) as res:
