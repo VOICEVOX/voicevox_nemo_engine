@@ -32,7 +32,7 @@ def test_release_build(dist_dir: Path) -> None:
     # テキスト -> クエリ
     text = "こんにちは、音声合成の世界へようこそ"
     req = Request(
-        base_url + "audio_query?" + urlencode({"speaker": "1", "text": text}),
+        base_url + "audio_query?" + urlencode({"speaker": "10001", "text": text}),
         method="POST",
     )
     with urlopen(req) as res:
