@@ -25,7 +25,7 @@ on:
         default: false
 
 env:
-  VOICEVOX_RESOURCE_VERSION: "0.21.0"
+  VOICEVOX_RESOURCE_VERSION: "0.23.0"
   VOICEVOX_CORE_VERSION: "0.15.0"
 
 defaults:
@@ -76,7 +76,7 @@ jobs:
             zlib_url: http://www.winimage.com/zLibDll/zlib123dllx64.zip
             target: windows-nvidia
           # Mac CPU (x64 arch)
-          - os: macos-12
+          - os: macos-13
             architecture: "x64"
             voicevox_core_asset_prefix: voicevox_core-osx-x64-cpu
             onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-osx-x86_64-1.13.1.tgz
@@ -87,12 +87,18 @@ jobs:
             voicevox_core_asset_prefix: voicevox_core-osx-arm64-cpu
             onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-osx-arm64-1.13.1.tgz
             target: macos-arm64
-          # Linux CPU
+          # Linux CPU (x64 arch)
           - os: ubuntu-20.04
             architecture: "x64"
             voicevox_core_asset_prefix: voicevox_core-linux-x64-cpu
             onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz
-            target: linux-cpu
+            target: linux-cpu-x64
+          # Linux CPU (arm64 arch)
+          - os: ubuntu-22.04-arm
+            architecture: "arm64"
+            voicevox_core_asset_prefix: voicevox_core-linux-arm64-cpu
+            onnxruntime_url: https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-aarch64-1.13.1.tgz
+            target: linux-cpu-arm64
           # Linux NVIDIA GPU
           - os: ubuntu-20.04
             architecture: "x64"

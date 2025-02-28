@@ -187,7 +187,6 @@ WORKDIR /opt/voicevox_engine
 
 # ca-certificates: pyopenjtalk dictionary download
 # build-essential: pyopenjtalk local build
-# libsndfile1: soundfile shared object for arm64
 # ref: https://github.com/VOICEVOX/voicevox_engine/issues/770
 RUN <<EOF
     set -eux
@@ -199,8 +198,7 @@ RUN <<EOF
         cmake \
         ca-certificates \
         build-essential \
-        gosu \
-        libsndfile1
+        gosu
     apt-get clean
     rm -rf /var/lib/apt/lists/*
 
@@ -229,7 +227,7 @@ COPY --from=download-onnxruntime-env /opt/onnxruntime /opt/onnxruntime
 # Add local files
 ADD ./voicevox_engine /opt/voicevox_engine/voicevox_engine
 ADD ./docs /opt/voicevox_engine/docs
-ADD ./run.py ./presets.yaml ./engine_manifest.json /opt/voicevox_engine/
+ADD ./run.py ./engine_manifest.json /opt/voicevox_engine/
 ADD ./resources /opt/voicevox_engine/resources
 ADD ./tools/generate_licenses.py /opt/voicevox_engine/tools/
 ADD ./tools/licenses /opt/voicevox_engine/tools/licenses
@@ -283,7 +281,7 @@ RUN <<EOF
 EOF
 
 # Download Resource
-ARG VOICEVOX_RESOURCE_VERSION=0.21.0
+ARG VOICEVOX_RESOURCE_VERSION=0.23.0
 RUN <<EOF
     set -eux
 

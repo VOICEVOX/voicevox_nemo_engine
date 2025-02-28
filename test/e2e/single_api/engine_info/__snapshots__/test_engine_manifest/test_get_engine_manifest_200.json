@@ -31,6 +31,49 @@
   "terms_of_service": "dummy teams of service",
   "update_infos": [
     {
+      "contributors": [
+        "aoirint",
+        "Hiroshiba",
+        "HyodaKazuaki",
+        "nanae772",
+        "sabonerune",
+        "shunjilin",
+        "sigprogramming",
+        "takana-v"
+      ],
+      "descriptions": [
+        "ソング：ピッチ取得APIを追加",
+        "同一エンジンの複数同時稼働を可能に",
+        "ARM64版エンジンの提供",
+        "開発環境の向上"
+      ],
+      "version": "0.23.0"
+    },
+    {
+      "contributors": [
+        "aoirint",
+        "Hiroshiba",
+        "rokujyushi",
+        "sabonerune",
+        "sevenc-nanashi",
+        "takana-v",
+        "tarepan"
+      ],
+      "descriptions": [
+        "ソング対応モーラを追加",
+        "プリセットの保存先を変更",
+        "開発環境の向上"
+      ],
+      "version": "0.22.0"
+    },
+    {
+      "contributors": [],
+      "descriptions": [
+        "キャラクター「Voidoll」を追加"
+      ],
+      "version": "0.21.1"
+    },
+    {
       "contributors": [],
       "descriptions": [
         "変更を追従"
