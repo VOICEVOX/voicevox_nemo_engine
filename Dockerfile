@@ -83,7 +83,7 @@ RUN <<EOF
     set -eux
 
     # README
-    curl -fLo "/opt/voicevox_engine/README.md" --retry 3 --retry-delay 5 "https://raw.githubusercontent.com/VOICEVOX/voicevox_resource/${VOICEVOX_RESOURCE_VERSION}/voicevox_nemo/engine/README.md"
+    curl -fLo "/opt/voicevox_engine/README.md" --retry 3 --retry-delay 5 "https://raw.githubusercontent.com/VOICEVOX/voicevox_nemo_resource/${VOICEVOX_RESOURCE_VERSION}/voicevox_nemo/engine/README.md"
 EOF
 
 # Create container start shell
