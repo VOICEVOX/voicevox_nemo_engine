@@ -29,7 +29,7 @@ on:
         default: false
 
 env:
-  VOICEVOX_RESOURCE_VERSION: "0.25.0"
+  VOICEVOX_RESOURCE_VERSION: "0.26.0-preview.0"
   VOICEVOX_CORE_AND_DOWNLOADER_VERSION: "0.16.2"
   VOICEVOX_ONNXRUNTIME_VERSION: "voicevox_onnxruntime-1.17.3"
   VOICEVOX_ADDITIONAL_LIBRARIES_VERSION: "0.2.0"
@@ -372,7 +372,7 @@ jobs:
         if: steps.voicevox-resource-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
-          repository: VOICEVOX/voicevox_nemo_resource
+          repository: VOICEVOX/voicevox_resource
           ref: ${{ env.VOICEVOX_RESOURCE_VERSION }}
           path: download/resource
 
