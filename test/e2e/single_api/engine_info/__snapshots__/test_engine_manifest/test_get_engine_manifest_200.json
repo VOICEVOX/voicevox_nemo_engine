@@ -26,11 +26,32 @@
     "manage_library": true,
     "return_resource_url": true,
     "sing": true,
+    "streaming_synthesis": true,
     "synthesis_morphing": true
   },
   "supported_vvlib_manifest_version": null,
   "terms_of_service": "dummy teams of service",
   "update_infos": [
+    {
+      "contributors": [
+        "Arata1202",
+        "Hiroshiba",
+        "Yosshi999",
+        "coil082",
+        "raa0121",
+        "sabonerune",
+        "takana-v",
+        "yuito-it"
+      ],
+      "descriptions": [
+        "Windows・Linuxで性能の高いCPUコアを優先して使うように変更",
+        "ストリーミングで音声合成するAPIを追加",
+        "Mac版に署名を追加",
+        "開発環境の向上",
+        "バグ修正"
+      ],
+      "version": "0.26.0"
+    },
     {
       "contributors": [],
       "descriptions": [

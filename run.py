@@ -8,7 +8,7 @@ import warnings
 from dataclasses import asdict, dataclass
 from io import TextIOWrapper
 from pathlib import Path
-from typing import TextIO, TypeVar
+from typing import TextIO
 
 import uvicorn
 from pydantic import TypeAdapter
@@ -16,6 +16,7 @@ from pydantic import TypeAdapter
 from voicevox_engine.app.application import generate_app
 from voicevox_engine.cancellable_engine import CancellableEngine
 from voicevox_engine.core.core_initializer import initialize_cores
+from voicevox_engine.cpu_execution import configure_cpu_execution
 from voicevox_engine.engine_manifest import load_manifest
 from voicevox_engine.library.library_manager import LibraryManager
 from voicevox_engine.preset.preset_manager import PresetManager
@@ -146,10 +147,7 @@ def set_output_log_utf8() -> None:
         sys.stderr = _prepare_utf8_stdio(sys.stderr)
 
 
-T = TypeVar("T")
-
-
-def select_first_not_none(candidates: list[T | None]) -> T:
+def select_first_not_none[T](candidates: list[T | None]) -> T:
     """None でない最初の値を取り出す。全て None の場合はエラーを送出する。"""
     for candidate in candidates:
         if candidate is not None:
@@ -157,10 +155,7 @@ def select_first_not_none(candidates: list[T | None]) -> T:
     raise RuntimeError("すべての候補値が None です")
 
 
-S = TypeVar("S")
-
-
-def select_first_not_none_or_none(candidates: list[S | None]) -> S | None:
+def select_first_not_none_or_none[T](candidates: list[T | None]) -> T | None:
     """None でない最初の値を取り出そうとし、全て None の場合は None を返す。"""
     for candidate in candidates:
         if candidate is not None:
@@ -354,29 +349,34 @@ def main() -> None:
 
     use_gpu = select_first_not_none([args.use_gpu, envs.use_gpu])
 
+    cpu_num_threads = configure_cpu_execution(args.cpu_num_threads)
     core_manager = initialize_cores(
         use_gpu=use_gpu,
+        cpu_num_threads=cpu_num_threads,
         voicelib_dirs=args.voicelib_dirs,
         voicevox_dir=args.voicevox_dir,
         runtime_dirs=args.runtime_dirs,
-        cpu_num_threads=args.cpu_num_threads,
         enable_mock=args.enable_mock,
         load_all_models=args.load_all_models,
     )
     tts_engines = make_tts_engines_from_cores(core_manager)
     song_engines = make_song_engines_from_cores(core_manager)
-    assert len(tts_engines.versions()) != 0, "音声合成エンジンがありません。"
-    assert len(song_engines.versions()) != 0, "音声合成エンジンがありません。"
+    assert len(tts_engines.versions()) != 0, (
+        "テキスト音声合成エンジンがありません。コアが見つからなかった可能性があります。"
+    )
+    assert len(song_engines.versions()) != 0, (
+        "歌声音声合成エンジンがありません。コアが見つからなかった可能性があります。"
+    )
 
     cancellable_engine: CancellableEngine | None = None
     if args.enable_cancellable_synthesis:
         cancellable_engine = CancellableEngine(
             init_processes=args.init_processes,
             use_gpu=use_gpu,
+            cpu_num_threads=cpu_num_threads,
             voicelib_dirs=args.voicelib_dirs,
             voicevox_dir=args.voicevox_dir,
             runtime_dirs=args.runtime_dirs,
-            cpu_num_threads=args.cpu_num_threads,
             enable_mock=args.enable_mock,
         )
 

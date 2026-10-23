@@ -1,15 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
 # このファイルはPyInstallerによって自動生成されたもので、それをカスタマイズして使用しています。
+import sys
 from argparse import ArgumentParser
 from pathlib import Path
 from shutil import copy2, copytree
 
-from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_data_files, collect_dynamic_libs
 
 parser = ArgumentParser()
 parser.add_argument("--libcore_path", type=Path)
 parser.add_argument("--libonnxruntime_path", type=Path)
 parser.add_argument("--core_model_dir_path", type=Path)
+parser.add_argument("--codesign_identity", type=str)
 options = parser.parse_args()
 
 libcore_path: Path | None = options.libcore_path
@@ -24,11 +26,24 @@ core_model_dir_path: Path | None = options.core_model_dir_path
 if core_model_dir_path is not None and not core_model_dir_path.is_dir():
     raise Exception(f"core_model_dir_path: {core_model_dir_path} is not dir")
 
+codesign_identity: str | None = options.codesign_identity
+
+if sys.platform == "win32":
+    pyhwloc_binaries = collect_dynamic_libs(
+        "pyhwloc", search_patterns=["hwloc.dll", "pyhwloc.dll"]
+    )
+elif sys.platform == "linux":
+    pyhwloc_binaries = collect_dynamic_libs(
+        "pyhwloc", search_patterns=["libhwloc.so", "libpyhwloc.so"]
+    )
+else:
+    pyhwloc_binaries = []
+
 
 a = Analysis(
     ["run.py"],
     pathex=[],
-    binaries=[],
+    binaries=pyhwloc_binaries,
     datas=collect_data_files("pyopenjtalk"),
     hiddenimports=[],
     hookspath=[],
@@ -54,7 +69,7 @@ exe = EXE(
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
-    codesign_identity=None,
+    codesign_identity=codesign_identity,
     entitlements_file=None,
     contents_directory="engine_internal",  # 実行時に"sys._MEIPASS"が参照するディレクトリ名
 )

@@ -115,6 +115,33 @@ curl -s \
 
 `speaker` に指定する値は `/speakers` エンドポイントで得られるスタイルの情報にある `id` です。互換性のために `speaker` という名前になっています。
 
+### ストリーミングで音声合成するサンプルコード
+
+`/streaming_synthesis`は、音声を合成しながら音声ファイルを少しずつ返します。音声全体を待つことなく音声を再生できます。
+
+```bash
+echo -n "こんにちは、ストリーミング音声合成の世界へようこそ" >text.txt
+
+curl -s \
+    -X POST \
+    "127.0.0.1:50021/audio_query?speaker=1" \
+    --get --data-urlencode text@text.txt \
+    > query.json
+
+curl -s \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d @query.json \
+    "127.0.0.1:50021/streaming_synthesis?speaker=1&segment_length=0.3" \
+    > audio_stream.wav
+```
+
+`segment_length`で一度に合成する音声の長さを秒単位で指定できます。  
+音声をストリーミング再生したときに音声が途切れる場合は、`segment_length`に大きい値を指定してください。
+
+`start_offset`で音声の開始位置を指定することで、音声を途中から合成できます。  
+注意点として、別のリクエストで合成した２つの音声を結合すると、つなぎ目の音が不自然になる場合があります。全体の音声が必要な場合は１回のリクエストで合成してください。
+
 ### 音声を調整するサンプルコード
 
 `/audio_query` で得られる音声合成用のクエリのパラメータを編集することで、音声を調整できます。
@@ -429,7 +456,7 @@ VOICEVOX ではセキュリティ保護のため`localhost`・`127.0.0.1`・`app
 
 ### データを変更する API を無効化する
 
-実行時引数`--disable_mutable_api`か環境変数`VV_DISABLE_MUTABLE_API=1`を指定することで、エンジンの設定や辞書などを変更する API を無効にできます。
+コマンドライン引数`--disable_mutable_api`か環境変数`VV_DISABLE_MUTABLE_API=1`を指定することで、エンジンの設定や辞書などを変更する API を無効にできます。
 
 ### 文字コード
 
@@ -519,6 +546,10 @@ options:
                         辞書登録や設定変更など、エンジンの静的なデータを変更するAPIを無効化します。指定しない場合、代わりに環境変数 VV_DISABLE_MUTABLE_API の値が使われます。VV_DISABLE_MUTABLE_API の値が1の場合は無効化で、0または空文字、値がない場合は無視されます。
 ```
 
+#### プロキシ環境での利用
+
+リバースプロキシ等でエンジンを動作させる場合、環境変数 `FORWARDED_ALLOW_IPS` にプロキシのIPアドレスを指定することで、APIが返すURLなどが正しく生成されます。
+
 ### アップデート
 
 エンジンディレクトリ内にあるファイルを全て消去し、新しいものに置き換えてください。
@@ -584,11 +615,12 @@ uv run run.py --output_log_utf8
 
 #### CPU スレッド数を指定する
 
-CPU スレッド数が未指定の場合は、論理コア数の半分が使われます。（殆どの CPU で、これは全体の処理能力の半分です）  
+CPU スレッド数が未指定の場合は、論理コア数の半分が使われます。  
+Windows と Linux では性能の高い CPU を優先して使おうとします。  
 もし IaaS 上で実行していたり、専用サーバーで実行している場合など、  
 エンジンが使う処理能力を調節したい場合は、CPU スレッド数を指定することで実現できます。
 
-- 実行時引数で指定する
+- コマンドライン引数で指定する
   ```bash
   uv run run.py --voicevox_dir=$VOICEVOX_DIR --cpu_num_threads=4
   ```
